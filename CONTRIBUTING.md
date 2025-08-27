@@ -59,7 +59,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 
    ```bash
    # Test Node.js integration
-   cd node-logger-test
+   cd logger-node-demo
    npm install
    npm run start
 
@@ -79,8 +79,11 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 │   ├── logger.ts          # Logger implementation
 │   ├── types.ts           # TypeScript interfaces
 │   └── plugins.ts         # Plugin system
+├── plugins/                # External transport plugins
+│   ├── cargolog-http-transport/  # HTTP transport plugin
+│   └── README.md          # Plugin development guide
 ├── logger-react-demo/      # React demo application
-├── node-logger-test/       # Node.js test application
+├── logger-node-demo/       # Node.js demo application
 ├── dist/                  # Built output (generated)
 └── docs/                  # Documentation
 ```
@@ -107,11 +110,13 @@ CargoLog follows a modular transport architecture. New transports should be crea
 
 ### Transport Package Guidelines
 
-1. **Package Naming**: Use the pattern `@jandresleiva/cargolog-transport-{name}`
-2. **Dependencies**: Depend on `@jandresleiva/cargolog` as a peer dependency
-3. **TypeScript**: Include full TypeScript support with `.d.ts` files
-4. **Testing**: Include comprehensive tests
-5. **Documentation**: Provide clear usage examples
+1. **Package Naming**: Use the pattern `@jandresleiva/cargolog-{transport-name}-transport`
+2. **Location**: Develop plugins in the `plugins/` directory
+3. **Dependencies**: Depend on `@jandresleiva/cargolog` as a peer dependency
+4. **TypeScript**: Include full TypeScript support with `.d.ts` files
+5. **Testing**: Include comprehensive tests
+6. **Documentation**: Provide clear usage examples
+7. **Features**: Consider implementing redaction capabilities for sensitive data protection
 
 ### Transport Implementation Checklist
 
@@ -120,6 +125,7 @@ CargoLog follows a modular transport architecture. New transports should be crea
 - [ ] Supports async operations properly
 - [ ] Includes `minLevel` filtering
 - [ ] Implements `flush()` and `close()` when applicable
+- [ ] Supports data redaction for sensitive information (optional)
 - [ ] Has comprehensive tests
 - [ ] Includes TypeScript definitions
 - [ ] Has clear documentation with examples
@@ -127,7 +133,7 @@ CargoLog follows a modular transport architecture. New transports should be crea
 ### Example Transport Structure
 
 ```
-cargolog-transport-file/
+plugins/cargolog-{transport-name}-transport/
 ├── src/
 │   ├── index.ts           # Main transport implementation
 │   └── types.ts           # Transport-specific types
@@ -135,7 +141,8 @@ cargolog-transport-file/
 │   └── index.test.ts      # Test suite
 ├── package.json
 ├── README.md
-└── tsconfig.json
+├── tsconfig.json
+└── tsup.config.ts         # Build configuration
 ```
 
 ## Testing
