@@ -1,11 +1,14 @@
 import { Transport, LogRecord, LogLevel } from '@jandresleiva/cargolog';
 
+export type RedactionFunction = (key: string, value: unknown) => unknown;
+
 export interface HttpTransportOptions {
   url: string;
   minLevel?: LogLevel;
   batchSize?: number;
   timeout?: number;
   headers?: Record<string, string>;
+  redact?: RedactionFunction;
 }
 
 export class HttpTransport implements Transport {
@@ -15,6 +18,7 @@ export class HttpTransport implements Transport {
   private readonly batchSize: number;
   private readonly timeout: number;
   private readonly headers: Record<string, string>;
+  private readonly redact?: RedactionFunction;
 
   constructor(options: HttpTransportOptions) {
     this.url = options.url;
@@ -25,13 +29,53 @@ export class HttpTransport implements Transport {
       'Content-Type': 'application/json',
       ...options.headers
     };
+    this.redact = options.redact;
   }
 
   write(record: LogRecord): void {
-    this.buffer.push(record);
+    const redactedRecord = this.redact ? this.applyRedaction(record) : record;
+    this.buffer.push(redactedRecord);
     if (this.buffer.length >= this.batchSize) {
       this.flush();
     }
+  }
+
+  private applyRedaction(record: LogRecord): LogRecord {
+    if (!this.redact) return record;
+
+    const redactedRecord: LogRecord = { ...record };
+
+    // Redact context if present
+    if (record.context) {
+      redactedRecord.context = this.redactObject(record.context);
+    }
+
+    // Redact error if present
+    if (record.err) {
+      redactedRecord.err = this.redactError(record.err);
+    }
+
+    return redactedRecord;
+  }
+
+  private redactObject(obj: Record<string, unknown>): Record<string, unknown> {
+    if (!this.redact) return obj;
+
+    const redacted: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      redacted[key] = this.redact(key, value);
+    }
+    return redacted;
+  }
+
+  private redactError(err: { name: string; message: string; stack?: string }): { name: string; message: string; stack?: string } {
+    if (!this.redact) return err;
+
+    return {
+      name: this.redact('name', err.name) as string,
+      message: this.redact('message', err.message) as string,
+      stack: err.stack ? this.redact('stack', err.stack) as string : undefined
+    };
   }
 
   async flush(): Promise<void> {
