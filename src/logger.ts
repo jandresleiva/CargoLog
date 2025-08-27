@@ -13,7 +13,9 @@ function serializeError(err: unknown): SerializedError {
 export class Logger {
   private cfg: LoggerConfig;
 
-  constructor(cfg: LoggerConfig) { this.cfg = cfg; }
+  constructor(cfg: LoggerConfig) { 
+    this.cfg = cfg;
+  }
 
   child(extra: Partial<LoggerConfig>) {
     return new Logger({
@@ -53,4 +55,18 @@ export class Logger {
   warn (m:string,o?:any){ this.emit('warn', m,o); }
   error(m:string,o?:any){ this.emit('error',m,o); }
   fatal(m:string,o?:any){ this.emit('fatal',m,o); }
+
+  async flush(): Promise<void> {
+    const promises = this.cfg.transports
+      .map(t => t.flush?.())
+      .filter(p => p !== undefined);
+    await Promise.all(promises);
+  }
+
+  async close(): Promise<void> {
+    const promises = this.cfg.transports
+      .map(t => t.close?.())
+      .filter(p => p !== undefined);
+    await Promise.all(promises);
+  }
 }
