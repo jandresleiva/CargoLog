@@ -1,4 +1,4 @@
-import { Transport, LogRecord, LogLevel } from '@jandresleiva/cargolog/types';
+import { Transport, LogRecord, LogLevel } from '@jandresleiva/cargolog';
 
 export interface HttpTransportOptions {
   url: string;

@@ -1,6 +1,6 @@
 {
   "name": "@jandresleiva/cargolog-http-transport",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "HTTP transport plugin for CargoLog",
   "author": "Juan Andres Leiva <leivajandres@gmail.com>",
   "license": "MIT",
@@ -25,7 +25,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsup",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "publish:dev": "npm version patch && npm publish --tag dev"
   },
   "engines": {
     "node": ">=18"
@@ -38,10 +39,10 @@
     "plugin"
   ],
   "peerDependencies": {
-    "@jandresleiva/cargolog": "^1.0.0"
+    "@jandresleiva/cargolog": "^1.0.2-dev"
   },
   "devDependencies": {
-    "@jandresleiva/cargolog": "^1.0.1",
+    "@jandresleiva/cargolog": "^1.0.2-dev",
     "@types/node": "^24.3.0",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
