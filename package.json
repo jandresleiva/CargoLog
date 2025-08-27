@@ -27,6 +27,11 @@
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     },
+    "./types": {
+      "import": "./dist/types.mjs",
+      "require": "./dist/types.cjs",
+      "types": "./dist/types.d.ts"
+    },
     "./transports/console": {
       "import": "./dist/transports/console.mjs",
       "require": "./dist/transports/console.cjs",
@@ -39,6 +44,7 @@
     "build": "tsup",
     "test": "vitest run",
     "prepublishOnly": "npm run clean && npm run build",
+    "publish:dev": "npm version patch && npm publish --tag dev",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish"

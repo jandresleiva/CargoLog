@@ -1,0 +1,50 @@
+{
+  "name": "@jandresleiva/cargolog-http-transport",
+  "version": "1.0.0",
+  "description": "HTTP transport plugin for CargoLog",
+  "author": "Juan Andres Leiva <leivajandres@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jandresleiva/cargolog-http-transport.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsup",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "cargolog",
+    "logging",
+    "transport",
+    "http",
+    "plugin"
+  ],
+  "peerDependencies": {
+    "@jandresleiva/cargolog": "^1.0.0"
+  },
+  "devDependencies": {
+    "@jandresleiva/cargolog": "^1.0.1",
+    "@types/node": "^24.3.0",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}
