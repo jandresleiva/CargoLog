@@ -1,10 +1,11 @@
 # CargoLog Plugin Architecture
 
-CargoLog now supports a plugin architecture that allows transports to be shipped as separate npm packages. This enables a plug-and-play ecosystem where developers can create and share custom transports.
+CargoLog supports a plugin architecture that allows transports to be shipped as separate npm packages. This enables a plug-and-play ecosystem where developers can create and share custom transports.
 
 ## Core Concepts
 
 ### Transport Interface
+
 All transport plugins must implement the `Transport` interface:
 
 ```typescript
@@ -17,14 +18,17 @@ interface Transport {
 ```
 
 ### Plugin Package Structure
+
 Transport plugins should be structured as separate npm packages with:
+
 - CargoLog as a peer dependency
-- Import types from `@jandresleiva/cargolog/types`
+- Import types from `@jandresleiva/cargolog`
 - Follow the naming convention `@jandresleiva/cargolog-{transport-name}-transport`
 
 ## Creating a Transport Plugin
 
 ### 1. Package Setup
+
 ```json
 {
   "name": "@jandresleiva/cargolog-your-transport",
@@ -35,20 +39,21 @@ Transport plugins should be structured as separate npm packages with:
 ```
 
 ### 2. Implementation
+
 ```typescript
-import { Transport, LogRecord, LogLevel } from '@jandresleiva/cargolog/types';
+import { Transport, LogRecord, LogLevel } from "@jandresleiva/cargolog/types";
 
 export class YourTransport implements Transport {
   constructor(public minLevel?: LogLevel) {}
-  
+
   write(record: LogRecord): void {
     // Your transport logic here
   }
-  
+
   async flush(): Promise<void> {
     // Optional: flush any buffered records
   }
-  
+
   async close(): Promise<void> {
     // Optional: cleanup resources
   }
@@ -56,22 +61,25 @@ export class YourTransport implements Transport {
 ```
 
 ### 3. Usage
+
 ```typescript
-import { Logger } from '@jandresleiva/cargolog';
-import { YourTransport } from '@jandresleiva/cargolog-your-transport';
+import { Logger } from "@jandresleiva/cargolog";
+import { YourTransport } from "@jandresleiva/cargolog-your-transport";
 
 const logger = new Logger({
-  level: 'info',
-  transports: [new YourTransport()]
+  level: "info",
+  transports: [new YourTransport()],
 });
 ```
 
 ## Available Transport Plugins
 
 ### Built-in Transports
+
 - **ConsoleTransport**: Ships with CargoLog core for console output
 
 ### Community Transports
+
 - **HttpTransport** (`@jandresleiva/cargolog-http-transport`): Send logs to HTTP endpoints
 
 ## Benefits

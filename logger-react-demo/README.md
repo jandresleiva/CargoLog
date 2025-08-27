@@ -1,69 +1,65 @@
-# React + TypeScript + Vite
+# CargoLog React Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive React demo showcasing [CargoLog](https://github.com/jandresleiva/CargoLog) logging capabilities with the HTTP transport plugin.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dual Transport Setup**: Console logging for development + HTTP transport for remote logging
+- **Interactive UI**: Test different log levels and see real-time output
+- **Plugin Architecture**: Demonstrates CargoLog's plugin system with `@jandresleiva/cargolog-http-transport`
+- **Browser Optimized**: Smart filtering (only warnings/errors sent to HTTP)
+- **Real-time Visualization**: In-app log viewer with structured data display
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:5173 to see the demo.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## What's Demonstrated
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Transport Configuration
+- **Console Transport**: All log levels (debug+) displayed in browser console
+- **HTTP Transport**: Warning and error levels sent to remote endpoint
+- **Batching**: Automatic log batching for efficient network usage
+- **Error Handling**: Graceful handling of network failures
+
+### Interactive Features
+- Click individual log level buttons to test specific levels
+- Use "Emit all levels" to generate a complete log sequence
+- "ERROR with stack" demonstrates error serialization
+- Real-time log viewer shows structured log data
+- Adjustable namespace and minimum log level filtering
+
+### Plugin Integration
+```typescript
+import { Logger, ConsoleTransport } from '@jandresleiva/cargolog';
+import { HttpTransport } from '@jandresleiva/cargolog-http-transport';
+
+const logger = new Logger({
+  level: 'debug',
+  transports: [
+    new ConsoleTransport('debug'),
+    new HttpTransport({
+      url: 'https://your-endpoint.com/logs',
+      minLevel: 'warn',
+      batchSize: 10
+    })
+  ]
+});
 ```
+
+## Built With
+
+- **CargoLog**: Isomorphic logging library
+- **React + TypeScript**: UI framework
+- **Vite**: Build tool and dev server
+
+## Related
+
+- [CargoLog Core](https://github.com/jandresleiva/CargoLog) - Main logging library
+- [HTTP Transport Plugin](https://www.npmjs.com/package/@jandresleiva/cargolog-http-transport) - HTTP transport for remote logging
+- [Node.js Demo](../logger-node-demo) - Server-side CargoLog demo
