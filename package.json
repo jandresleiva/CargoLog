@@ -1,5 +1,6 @@
 {
-  "name": "CargoLog",
+  "name": "@jandresleiva/cargolog",
+  "publishConfig": { "access": "public" },
   "version": "1.0.0",
   "description": "A lightweight isomorphic logging library with custom transports support for Node.js and browsers TypeScript native",
   "author": "Juan Andres Leiva <leivajandres@gmail.com>",
