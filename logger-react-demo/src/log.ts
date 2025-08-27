@@ -6,7 +6,7 @@ export const baseLog = new Logger({
   level: import.meta.env.PROD ? 'info' : 'debug',
   transports: [
     new ConsoleTransport('debug'),
-    // HTTP transport to send logs to test endpoint
+    // HTTP transport to send logs to test endpoint with redaction
     new HttpTransport({
       url: 'https://test-cargolog-http-node.free.beeceptor.com',
       minLevel: 'warn', // Only send warnings and errors to HTTP in browser
@@ -15,6 +15,25 @@ export const baseLog = new Logger({
       headers: {
         'X-Demo-App': 'CargoLog-React-Demo',
         'X-Environment': import.meta.env.PROD ? 'production' : 'development'
+      },
+      redact: (key, value) => {
+        // Redact sensitive information before sending to HTTP endpoint
+        if (key === 'password' || key === 'apiKey' || key === 'token' || key === 'sessionId') {
+          return '[REDACTED]';
+        }
+        // Mask email addresses
+        if (key === 'email' && typeof value === 'string') {
+          return value.replace(/(.{2}).*@/, '$1***@');
+        }
+        // Mask credit card numbers
+        if (key === 'creditCard' && typeof value === 'string') {
+          return value.replace(/\d{4}/g, '****');
+        }
+        // Truncate stack traces for HTTP logs
+        if (key === 'stack' && typeof value === 'string') {
+          return value.split('\n').slice(0, 2).join('\n') + '\n... (truncated for HTTP)';
+        }
+        return value;
       }
     })
   ],

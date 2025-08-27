@@ -51,6 +51,27 @@ export default function App() {
     log.fatal('fatal sample', { err: new Error('kaboom') });
   };
 
+  const emitSensitiveData = () => {
+    log.warn('User login attempt', {
+      context: {
+        email: 'user@example.com',
+        password: 'secret123',
+        sessionId: 'sess_abc123xyz789',
+        ipAddress: '192.168.1.100'
+      }
+    });
+    
+    log.error('Payment processing failed', {
+      context: {
+        creditCard: '4532-1234-5678-9012',
+        apiKey: 'pk_live_secret_key_123',
+        amount: 99.99,
+        userId: 'user_456'
+      },
+      err: new Error('Payment gateway timeout')
+    });
+  };
+
   return (
     <div style={{ fontFamily: 'ui-sans-serif, system-ui', padding: 20, maxWidth: 960, margin: '0 auto' }}>
       <h1>Logger Demo (React + TS)</h1>
@@ -74,6 +95,7 @@ export default function App() {
 
         <div style={{ alignSelf: 'end', display: 'flex', gap: 8 }}>
           <button onClick={emitAll}>Emit all levels</button>
+          <button onClick={emitSensitiveData}>Test Redaction</button>
           <button onClick={() => setRows([])}>Clear</button>
         </div>
       </section>
@@ -122,10 +144,11 @@ export default function App() {
       <div style={{ marginTop: 16, padding: 12, backgroundColor: '#f5f5f5', borderRadius: 4 }}>
         <h3 style={{ margin: '0 0 8px 0', fontSize: 14 }}>HTTP Transport Status</h3>
         <p style={{ margin: 0, fontSize: 12, color: '#666' }}>
-          • Console: All levels (debug+)<br/>
-          • HTTP: Warning and error levels only<br/>
-          • Endpoint: <code>https://cargolog-test-http.free.beeceptor.com</code><br/>
-          • Batch size: 10 logs
+          • Console: All levels (debug+) - unredacted<br/>
+          • HTTP: Warning and error levels only - with redaction<br/>
+          • Endpoint: <code>https://test-cargolog-http-node.free.beeceptor.com</code><br/>
+          • Batch size: 10 logs<br/>
+          • <strong>Test Redaction</strong>: Click to see sensitive data protection in action
         </p>
       </div>
     </div>

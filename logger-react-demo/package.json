@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@jandresleiva/cargolog": "^1.0.2",
-    "@jandresleiva/cargolog-http-transport": "^0.1.2",
+    "@jandresleiva/cargolog-http-transport": "^1.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
