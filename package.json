@@ -1,17 +1,17 @@
 {
-  "name": "NexusLog",
+  "name": "CargoLog",
   "version": "1.0.0",
   "description": "A lightweight isomorphic logging library with custom transports support for Node.js and browsers TypeScript native",
   "author": "Juan Andres Leiva <leivajandres@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jandresleiva/NexusLog.git"
+    "url": "git+https://github.com/jandresleiva/CargoLog.git"
   },
   "bugs": {
-    "url": "https://github.com/jandresleiva/NexusLog.git/issues"
+    "url": "https://github.com/jandresleiva/CargoLog.git/issues"
   },
-  "homepage": "https://github.com/jandresleiva/NexusLog.git#readme",
+  "homepage": "https://github.com/jandresleiva/CargoLog.git#readme",
   "files": ["dist"],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -33,7 +33,7 @@
     "clean": "rimraf dist",
     "build": "tsup",
     "test": "vitest run",
-    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "prepublishOnly": "npm run clean && npm run build",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish"

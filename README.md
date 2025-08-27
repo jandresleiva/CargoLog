@@ -13,14 +13,14 @@ An isomorphic logging library for Node.js and browsers with TypeScript support.
 ## Installation
 
 ```bash
-npm install NexusLog
+npm install CargoLog
 ```
 
 ## Quick Start
 
 ```typescript
-import { Logger } from "NexusLog";
-import { ConsoleTransport } from "NexusLog/transports/console";
+import { Logger } from "CargoLog";
+import { ConsoleTransport } from "CargoLog/transports/console";
 
 const logger = new Logger({
   transports: [new ConsoleTransport()],
