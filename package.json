@@ -11,41 +11,6 @@
     "build": "tsup",
     "test": "vitest run"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    },
-    "./src/logger": {
-      "types": "./dist/src/logger.d.ts",
-      "import": "./dist/src/logger.mjs",
-      "require": "./dist/src/logger.cjs"
-    },
-    "./src/types": {
-      "types": "./dist/src/types.d.ts",
-      "import": "./dist/src/types.mjs",
-      "require": "./dist/src/types.cjs"
-    },
-    "./src/plugins": {
-      "types": "./dist/src/plugins.d.ts",
-      "import": "./dist/src/plugins.mjs",
-      "require": "./dist/src/plugins.cjs"
-    },
-    "./src/transports/console": {
-      "types": "./dist/transports/console.d.ts",
-      "import": "./dist/transports/console.mjs",
-      "require": "./dist/transports/console.cjs"
-    }
-  },
-  "peerDependencies": {
-    "kafkajs": "^2.2.0"
-  },
-  "peerDependenciesMeta": {
-    "kafkajs": {
-      "optional": true
-    }
-  },
   "engines": {
     "node": ">=18"
   },
@@ -62,25 +27,5 @@
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.ts",
-      "src/logger.ts",
-      "src/types.ts",
-      "src/plugins.ts",
-      "src/transports/console.ts"
-    ],
-    "clean": true,
-    "dts": true,
-    "format": [
-      "esm",
-      "cjs"
-    ],
-    "sourcemap": true,
-    "treeshake": true,
-    "outDir": "dist",
-    "target": "es2020",
-    "platform": "neutral"
   }
 }
