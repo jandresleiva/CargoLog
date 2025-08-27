@@ -1,5 +1,5 @@
-import { Logger } from 'my-logger';
-import { ConsoleTransport } from 'my-logger';
+import { Logger } from '@jandresleiva/cargolog';
+import { ConsoleTransport } from '@jandresleiva/cargolog/transports/console';
 
 const log = new Logger({
   level: 'debug',

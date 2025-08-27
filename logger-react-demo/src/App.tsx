@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { ns } from './log';
-import type { Transport, LogRecord, LogLevel } from 'my-logger';
+import type { Transport, LogRecord, LogLevel } from '@jandresleiva/cargolog';
 
 // In-memory transport to visualize logs inside the app.
 class InMemoryTransport implements Transport {

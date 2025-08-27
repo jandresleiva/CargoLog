@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "my-logger": "file:../dist",
+    "@jandresleiva/cargolog": "^1.0.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

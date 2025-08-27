@@ -1,4 +1,4 @@
-import { Logger, ConsoleTransport } from 'my-logger';
+import { Logger, ConsoleTransport } from '@jandresleiva/cargolog';
 
 // Base logger (shared config). No hard binding of namespace here.
 export const baseLog = new Logger({
