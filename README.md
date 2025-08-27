@@ -40,11 +40,40 @@ The main logger class that handles log messages and routes them to configured tr
 
 - **ConsoleTransport**: Outputs logs to the console with timestamp and formatting
 
+### Available Transport Plugins
+
+- **HttpTransport** (`@jandresleiva/cargolog-http-transport`): Send logs to HTTP endpoints with batching, timeout protection, and custom headers
+
+```bash
+npm install @jandresleiva/cargolog-http-transport
+```
+
+```typescript
+import { Logger, ConsoleTransport } from '@jandresleiva/cargolog';
+import { HttpTransport } from '@jandresleiva/cargolog-http-transport';
+
+const logger = new Logger({
+  level: 'info',
+  transports: [
+    new ConsoleTransport(),
+    new HttpTransport({
+      url: 'https://your-log-server.com/api/logs',
+      minLevel: 'warn',
+      batchSize: 100,
+      timeout: 5000,
+      headers: {
+        'Authorization': 'Bearer your-token'
+      }
+    })
+  ]
+});
+```
+
 ## Custom Transports
 
 CargoLog supports custom transports by implementing the `Transport` interface. This allows you to send logs to files, databases, external services, or any destination you need.
 
-Conceptually, CargoLog Transports will be added to the repository, but shipped in different npm packages. This is to keep the main package size small and focused on the core functionality, while allowing users to install only the transports they need.
+Transport plugins are shipped as separate npm packages to keep the core library lightweight while allowing users to install only the transports they need.
 
 ### Transport Interface
 
@@ -116,65 +145,6 @@ const logger = new Logger({
     new ConsoleTransport("debug"),
   ],
 });
-```
-
-### Example: HTTP Transport
-
-```typescript
-import { Transport, LogRecord } from "@jandresleiva/cargolog";
-
-export class HttpTransport implements Transport {
-  private buffer: LogRecord[] = [];
-  private flushTimer?: NodeJS.Timeout;
-
-  constructor(
-    private endpoint: string,
-    private batchSize: number = 10,
-    private flushInterval: number = 5000,
-    public minLevel: LogLevel = "info"
-  ) {
-    this.scheduleFlush();
-  }
-
-  write(record: LogRecord): void {
-    this.buffer.push(record);
-
-    if (this.buffer.length >= this.batchSize) {
-      this.flush();
-    }
-  }
-
-  async flush(): Promise<void> {
-    if (this.buffer.length === 0) return;
-
-    const logs = [...this.buffer];
-    this.buffer = [];
-
-    try {
-      await fetch(this.endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ logs }),
-      });
-    } catch (error) {
-      // Handle error - maybe add back to buffer or use fallback
-      console.error("Failed to send logs:", error);
-    }
-  }
-
-  private scheduleFlush(): void {
-    this.flushTimer = setTimeout(() => {
-      this.flush().finally(() => this.scheduleFlush());
-    }, this.flushInterval);
-  }
-
-  async close(): Promise<void> {
-    if (this.flushTimer) {
-      clearTimeout(this.flushTimer);
-    }
-    await this.flush();
-  }
-}
 ```
 
 ### Example: In-Memory Transport (for testing)

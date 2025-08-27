@@ -31,7 +31,7 @@ Transport plugins should be structured as separate npm packages with:
 
 ```json
 {
-  "name": "@jandresleiva/cargolog-your-transport",
+  "name": "@jandresleiva/cargolog-{transport-name}-transport",
   "peerDependencies": {
     "@jandresleiva/cargolog": "^1.0.0"
   }
@@ -41,7 +41,7 @@ Transport plugins should be structured as separate npm packages with:
 ### 2. Implementation
 
 ```typescript
-import { Transport, LogRecord, LogLevel } from "@jandresleiva/cargolog/types";
+import { Transport, LogRecord, LogLevel } from "@jandresleiva/cargolog";
 
 export class YourTransport implements Transport {
   constructor(public minLevel?: LogLevel) {}
