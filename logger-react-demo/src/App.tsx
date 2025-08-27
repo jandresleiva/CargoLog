@@ -116,8 +116,18 @@ export default function App() {
       </table>
 
       <p style={{ marginTop: 16, color: '#666' }}>
-        Open DevTools to see console output. If you enabled <code>FetchTransport</code>, POSTs go to <code>/api/logs</code>.
+        Open DevTools to see console output. HTTP logs (warn/error level) are sent to the Beeceptor test endpoint.
       </p>
+      
+      <div style={{ marginTop: 16, padding: 12, backgroundColor: '#f5f5f5', borderRadius: 4 }}>
+        <h3 style={{ margin: '0 0 8px 0', fontSize: 14 }}>HTTP Transport Status</h3>
+        <p style={{ margin: 0, fontSize: 12, color: '#666' }}>
+          • Console: All levels (debug+)<br/>
+          • HTTP: Warning and error levels only<br/>
+          • Endpoint: <code>https://cargolog-test-http.free.beeceptor.com</code><br/>
+          • Batch size: 10 logs
+        </p>
+      </div>
     </div>
   );
 }
