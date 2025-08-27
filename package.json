@@ -1,15 +1,42 @@
 {
-  "name": "my-logger",
-  "version": "0.1.0",
+  "name": "NexusLog",
+  "version": "1.0.0",
+  "description": "A lightweight isomorphic logging library with custom transports support for Node.js and browsers TypeScript native",
+  "author": "Juan Andres Leiva <leivajandres@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jandresleiva/NexusLog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jandresleiva/NexusLog.git/issues"
+  },
+  "homepage": "https://github.com/jandresleiva/NexusLog.git#readme",
   "files": ["dist"],
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./transports/console": {
+      "import": "./dist/transports/console.mjs",
+      "require": "./dist/transports/console.cjs",
+      "types": "./dist/transports/console.d.ts"
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsup",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:major": "npm version major && npm publish"
   },
   "engines": {
     "node": ">=18"

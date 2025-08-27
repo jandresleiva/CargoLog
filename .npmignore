@@ -1,0 +1,47 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Development files
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+
+# Test files
+**/*.test.*
+**/*.spec.*
+__tests__/
+tests/
+
+# Demo and example projects
+*-demo/
+examples/
+
+# Development dependencies
+node_modules/
+
+# Build artifacts (keep only dist)
+*.tsbuildinfo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp

@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "my-logger": "file:../my-logger-0.1.0.tgz",
+    "my-logger": "file:../dist",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
