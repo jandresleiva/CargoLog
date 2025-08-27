@@ -1,6 +1,6 @@
-# My Logger
+# CargoLog
 
-An isomorphic logging library for Node.js and browsers with TypeScript support.
+A lightweight isomorphic logging library with custom transports support for Node.js and browsers TypeScript native.
 
 ## Features
 
@@ -36,9 +36,189 @@ logger.error("Something went wrong", { error: new Error("Details") });
 
 The main logger class that handles log messages and routes them to configured transports.
 
-### Transports
+### Built-in Transports
 
-- **ConsoleTransport**: Outputs logs to the console
+- **ConsoleTransport**: Outputs logs to the console with timestamp and formatting
+
+## Custom Transports
+
+CargoLog supports custom transports by implementing the `Transport` interface. This allows you to send logs to files, databases, external services, or any destination you need.
+
+Conceptually, CargoLog Transports will be added to the repository, but shipped in different npm packages. This is to keep the main package size small and focused on the core functionality, while allowing users to install only the transports they need.
+
+### Transport Interface
+
+```typescript
+interface Transport {
+  minLevel?: LogLevel; // Optional minimum log level filter
+  write(record: LogRecord): void | Promise<void>; // Required: handle log records
+  flush?(): Promise<void>; // Optional: flush pending logs
+  close?(): Promise<void>; // Optional: cleanup resources
+}
+```
+
+### LogRecord Structure
+
+```typescript
+interface LogRecord {
+  level: LogLevel; // 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal'
+  msg: string; // Log message
+  time: number; // Timestamp (milliseconds)
+  ns?: string; // Namespace (optional)
+  context?: Record<string, unknown>; // Additional context data
+  err?: SerializedError; // Serialized error object (if any)
+}
+```
+
+### Example: File Transport (Node.js)
+
+```typescript
+import { Transport, LogRecord } from "@jandresleiva/cargolog";
+import { writeFile, appendFile } from "fs/promises";
+
+export class FileTransport implements Transport {
+  constructor(private filePath: string, public minLevel: LogLevel = "info") {}
+
+  async write(record: LogRecord): Promise<void> {
+    const timestamp = new Date(record.time).toISOString();
+    const namespace = record.ns ? `[${record.ns}]` : "";
+    const extras =
+      record.context || record.err
+        ? ` ${JSON.stringify({
+            ...record.context,
+            ...(record.err ? { err: record.err } : {}),
+          })}`
+        : "";
+
+    const logLine = `${timestamp} ${record.level.toUpperCase()} ${namespace} ${
+      record.msg
+    }${extras}\n`;
+
+    await appendFile(this.filePath, logLine);
+  }
+
+  async flush(): Promise<void> {
+    // File system automatically flushes, but you could implement buffering here
+  }
+
+  async close(): Promise<void> {
+    // Cleanup if needed (close file handles, etc.)
+  }
+}
+
+// Usage
+import { Logger } from "@jandresleiva/cargolog";
+
+const logger = new Logger({
+  level: "debug",
+  transports: [
+    new FileTransport("./app.log", "info"),
+    new ConsoleTransport("debug"),
+  ],
+});
+```
+
+### Example: HTTP Transport
+
+```typescript
+import { Transport, LogRecord } from "@jandresleiva/cargolog";
+
+export class HttpTransport implements Transport {
+  private buffer: LogRecord[] = [];
+  private flushTimer?: NodeJS.Timeout;
+
+  constructor(
+    private endpoint: string,
+    private batchSize: number = 10,
+    private flushInterval: number = 5000,
+    public minLevel: LogLevel = "info"
+  ) {
+    this.scheduleFlush();
+  }
+
+  write(record: LogRecord): void {
+    this.buffer.push(record);
+
+    if (this.buffer.length >= this.batchSize) {
+      this.flush();
+    }
+  }
+
+  async flush(): Promise<void> {
+    if (this.buffer.length === 0) return;
+
+    const logs = [...this.buffer];
+    this.buffer = [];
+
+    try {
+      await fetch(this.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ logs }),
+      });
+    } catch (error) {
+      // Handle error - maybe add back to buffer or use fallback
+      console.error("Failed to send logs:", error);
+    }
+  }
+
+  private scheduleFlush(): void {
+    this.flushTimer = setTimeout(() => {
+      this.flush().finally(() => this.scheduleFlush());
+    }, this.flushInterval);
+  }
+
+  async close(): Promise<void> {
+    if (this.flushTimer) {
+      clearTimeout(this.flushTimer);
+    }
+    await this.flush();
+  }
+}
+```
+
+### Example: In-Memory Transport (for testing)
+
+```typescript
+import { Transport, LogRecord } from "@jandresleiva/cargolog";
+
+export class InMemoryTransport implements Transport {
+  public logs: LogRecord[] = [];
+
+  constructor(public minLevel: LogLevel = "trace") {}
+
+  write(record: LogRecord): void {
+    this.logs.push({ ...record });
+  }
+
+  clear(): void {
+    this.logs = [];
+  }
+
+  getLogsByLevel(level: LogLevel): LogRecord[] {
+    return this.logs.filter((log) => log.level === level);
+  }
+}
+
+// Usage in tests
+const memoryTransport = new InMemoryTransport();
+const logger = new Logger({
+  level: "debug",
+  transports: [memoryTransport],
+});
+
+logger.info("Test message");
+console.log(memoryTransport.logs); // [{ level: 'info', msg: 'Test message', ... }]
+```
+
+### Transport Best Practices
+
+1. **Error Handling**: Always handle errors gracefully in your transport
+2. **Async Operations**: Use `async/await` for I/O operations
+3. **Buffering**: Consider buffering for performance with external services
+4. **Resource Cleanup**: Implement `close()` to clean up resources
+5. **Level Filtering**: Use `minLevel` to filter logs at the transport level
+6. **Performance**: Avoid blocking operations in the `write()` method
 
 ## License
 
