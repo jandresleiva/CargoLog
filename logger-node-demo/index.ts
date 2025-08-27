@@ -9,7 +9,7 @@ const log = new Logger({
     
     // HTTP transport to send logs to test endpoint
     new HttpTransport({
-      url: 'https://test-cargolog-http-node.free.beeceptor.com',
+      url: '', // UPDATE WITH YOUR HTTP ENDPOINT
       minLevel: 'info',
       batchSize: 5, // Small batch size for demo
       timeout: 10000,

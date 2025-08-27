@@ -8,7 +8,7 @@ export const baseLog = new Logger({
     new ConsoleTransport('debug'),
     // HTTP transport to send logs to test endpoint with redaction
     new HttpTransport({
-      url: 'https://test-cargolog-http-node.free.beeceptor.com',
+      url: '', // UPDATE WITH YOUR HTTP ENDPOINT
       minLevel: 'warn', // Only send warnings and errors to HTTP in browser
       batchSize: 10,
       timeout: 8000,
