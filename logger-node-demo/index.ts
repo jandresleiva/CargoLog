@@ -16,6 +16,21 @@ const log = new Logger({
       headers: {
         'X-Demo-App': 'CargoLog-Node-Demo',
         'X-Version': '1.0.0'
+      },
+      redact: (key, value) => {
+        // Redact sensitive information before sending to HTTP endpoint
+        if (key === 'password' || key === 'apiKey' || key === 'token') {
+          return '[REDACTED]';
+        }
+        // Mask email addresses
+        if (key === 'email' && typeof value === 'string') {
+          return value.replace(/(.{2}).*@/, '$1***@');
+        }
+        // Truncate long stack traces for HTTP logs
+        if (key === 'stack' && typeof value === 'string') {
+          return value.split('\n').slice(0, 3).join('\n') + '\n... (truncated)';
+        }
+        return value;
       }
     })
   ],
@@ -39,6 +54,26 @@ async function runDemo() {
   for (let i = 1; i <= 3; i++) {
     log.info(`Batch log message ${i}`, { iteration: i, timestamp: Date.now() });
   }
+  
+  // Demonstrate redaction with sensitive data
+  log.warn('User authentication attempt', {
+    context: {
+      email: 'john.doe@example.com',
+      password: 'supersecret123',
+      apiKey: 'sk_live_abc123xyz789',
+      userId: 'user_12345'
+    }
+  });
+  
+  log.error('Database connection failed', {
+    err: new Error('Connection timeout after 30 seconds'),
+    context: {
+      host: 'db.example.com',
+      port: 5432,
+      token: 'db_token_secret_key',
+      retryCount: 3
+    }
+  });
   
   log.info('Demo completed - flushing remaining logs...');
   
