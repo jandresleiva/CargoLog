@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight isomorphic logging library with custom transports support for Node.js and browsers TypeScript native",
   "author": "Juan Andres Leiva <leivajandres@gmail.com>",
   "license": "MIT",
