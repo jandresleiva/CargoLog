@@ -5,9 +5,9 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
-  sourcemap: true,
+  sourcemap: false,
   clean: true,
-  minify: false,
+  minify: true,
   target: 'es2020',
   outDir: 'dist'
 });
